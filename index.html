@@ -279,7 +279,14 @@
                     return;
                 }
 
-                const firebaseConfig = JSON.parse(__firebase_config);
+               const firebaseConfig = {
+  apiKey: "AIzaSyDbgLVdmD2-gWdqfS5g06CZyMAg45E353U",
+  authDomain: "math01-cff04.firebaseapp.com",
+  projectId: "math01-cff04",
+  storageBucket: "math01-cff04.firebasestorage.app",
+  messagingSenderId: "915450591259",
+  appId: "1:915450591259:web:5f43691f2ee6909096a0be"
+};
                 appId = typeof __app_id !== 'undefined' ? __app_id : 'default-math-app';
                 
                 const app = initializeApp(firebaseConfig);
