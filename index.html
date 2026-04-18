@@ -145,7 +145,7 @@
                 </div>
                 
                 <div class="mt-8 text-center text-gray-600 text-sm border-t border-dashed border-gray-400 pt-4 w-full">
-                    <p>測驗說明：共九題，皆為 11 至 19 的兩兩相乘。</p>
+                    <p>測驗說明：共九題，皆為 11 至 19 的同數相乘 (如 11×11)。</p>
                     <p>計分方式：全部答對即滿分，依照答對題數給分。時間越短排名越高！</p>
                     <p id="db-status" class="mt-2 text-xs text-yellow-600 animate-pulse">正在準備案卷 (連接資料庫)...</p>
                 </div>
@@ -279,15 +279,14 @@
                     return;
                 }
 
-               const firebaseConfig = {
-  apiKey: "AIzaSyDbgLVdmD2-gWdqfS5g06CZyMAg45E353U",
-  authDomain: "math01-cff04.firebaseapp.com",
-  projectId: "math01-cff04",
-  storageBucket: "math01-cff04.firebasestorage.app",
-  messagingSenderId: "915450591259",
-  appId: "1:915450591259:web:5f43691f2ee6909096a0be"
+             const firebaseConfig = { 
+  apiKey ："AIzaSyDbgLVdmD2-gWdqfS5g06CZyMAg45E353U" , 
+  authDomain : "math01-cff04.firebaseapp.com" , 
+  projectId : "math01-cff04" , 
+  storageBucket : "math01-cff04.firebasestorage.app" , 
+  messagingSenderId : "915450591259" , 
+  appId : "1:915450591259:web:5f43691f2ee6909096a0be" 
 };
-                appId = typeof __app_id !== 'undefined' ? __app_id : 'default-math-app';
                 
                 const app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
@@ -341,9 +340,13 @@
             questions = [];
             questionsContainer.innerHTML = '';
             
+            // 產生 11~19 的數字陣列並隨機打亂 (確保 9 題皆不重複)
+            let baseNumbers = [11, 12, 13, 14, 15, 16, 17, 18, 19];
+            baseNumbers.sort(() => Math.random() - 0.5);
+            
             for (let i = 0; i < 9; i++) {
-                const num1 = Math.floor(Math.random() * 9) + 11; // 11~19
-                const num2 = Math.floor(Math.random() * 9) + 11; // 11~19
+                const num1 = baseNumbers[i];
+                const num2 = baseNumbers[i]; // 兩個數字一樣
                 questions.push({
                     id: i,
                     num1: num1,
