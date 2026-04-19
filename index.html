@@ -272,33 +272,27 @@
         // --- Firebase 初始化 ---
         async function initFirebase() {
             try {
-                // 嘗試從環境獲取配置，若無則報錯
-                if (typeof __firebase_config === 'undefined') {
-                    dbStatus.innerText = "資料庫配置缺失，成績將無法儲存。";
-                    dbStatus.classList.replace('text-yellow-600', 'text-red-600');
-                    return;
-                }
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAcYh6IGnNCCu2GSc7YMqbLZaHfWIVJ3rg",
-  authDomain: "math03-5d9e2.firebaseapp.com",
-  projectId: "math03-5d9e2",
-  storageBucket: "math03-5d9e2.firebasestorage.app",
-  messagingSenderId: "932893622919",
-  appId: "1:932893622919:web:80e4d00bc1f0fa35b6ae22"
+                // =============== [請在這裡填寫您的 Firebase 設定] ===============
+                // 請將下方的內容，替換成您從 Firebase 控制台複製下來的 firebaseConfig
+              const firebaseConfig = {
+  apiKey: "AIzaSyAHnmYdfkyip_87RHjStSkUV1OjoUDhq_U",
+  authDomain: "math02-64f13.firebaseapp.com",
+  projectId: "math02-64f13",
+  storageBucket: "math02-64f13.firebasestorage.app",
+  messagingSenderId: "1015648728259",
+  appId: "1:1015648728259:web:a3dd756d7a23914ff09e76"
 };
+
                 
+                appId = 'm:1015648728259:web:a3dd756d7a23914ff09e76'; // 您的應用程式專屬 ID (可自訂)
+                // =================================================================
                 
                 const app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                // Auth Before Queries (MANDATORY RULE 3)
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                // 為了讓學生不用註冊就能記錄成績，這裡使用「匿名登入」
+                await signInAnonymously(auth);
 
                 onAuthStateChanged(auth, (user) => {
                     currentUser = user;
@@ -311,7 +305,7 @@ const firebaseConfig = {
 
             } catch (error) {
                 console.error("Firebase Initialization Error:", error);
-                dbStatus.innerText = "案卷系統連線失敗。";
+                dbStatus.innerText = "案卷系統連線失敗，請檢查 Firebase 設定。";
                 dbStatus.classList.replace('text-yellow-600', 'text-red-600');
             }
         }
