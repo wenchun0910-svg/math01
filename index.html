@@ -137,6 +137,32 @@
         </div>
     </div>
 
+    <!-- 管理員登入提示框 -->
+    <div id="admin-login-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="chinese-border bg-white p-6 rounded max-w-sm w-full mx-4 text-center">
+            <h3 class="text-xl font-bold text-[#1B5E20] mb-4">【掌門核實】</h3>
+            <p class="mb-4 text-gray-700">請輸入卷宗管理密碼：<br><span class="text-sm text-red-600">(預設為 admin)</span></p>
+            <input type="password" id="admin-pwd-input" class="input-chinese w-full mb-6 py-2" placeholder="輸入密碼...">
+            <div class="flex justify-center gap-4">
+                <button onclick="verifyAdminLogin()" class="btn-chinese px-6 py-2 rounded text-lg font-bold">登入</button>
+                <button onclick="closeAdminLogin()" class="bg-gray-500 text-white hover:bg-gray-600 px-6 py-2 rounded text-lg font-bold shadow-md transition-colors">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 更改密碼提示框 -->
+    <div id="change-pwd-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="chinese-border bg-white p-6 rounded max-w-sm w-full mx-4 text-center">
+            <h3 class="text-xl font-bold text-[#1B5E20] mb-4">【更改密碼】</h3>
+            <input type="password" id="new-pwd-input" class="input-chinese w-full mb-4 py-2" placeholder="請輸入新密碼">
+            <input type="password" id="new-pwd-confirm" class="input-chinese w-full mb-6 py-2" placeholder="請再次輸入新密碼">
+            <div class="flex justify-center gap-4">
+                <button onclick="saveNewPassword()" class="btn-chinese px-6 py-2 rounded text-lg font-bold">確認更改</button>
+                <button onclick="closeChangePwd()" class="bg-gray-500 text-white hover:bg-gray-600 px-6 py-2 rounded text-lg font-bold shadow-md transition-colors">取消</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 主要內容容器 -->
     <div class="max-w-3xl w-full relative">
         <div class="scroll-decorator scroll-top hidden sm:block"></div>
@@ -164,7 +190,7 @@
                     
                     <!-- 管理員按鈕 (移至最下方並加上文字) -->
                     <div class="mt-6">
-                        <button onclick="showAdmin()" class="flex items-center justify-center gap-1 mx-auto text-sm text-gray-400 hover:text-green-700 transition-colors" title="管理介面">
+                        <button onclick="showAdminLogin()" class="flex items-center justify-center gap-1 mx-auto text-sm text-gray-400 hover:text-green-700 transition-colors" title="管理介面">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                             進入卷宗管理
                         </button>
@@ -273,7 +299,10 @@
                     </div>
                 </div>
                 
-                <button onclick="resetApp()" class="bg-green-600 text-white hover:bg-green-700 px-8 py-2 rounded border-2 border-green-800 text-lg font-bold transition-colors shadow-md">返回首頁</button>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center w-full">
+                    <button onclick="showChangePwd()" class="bg-yellow-600 text-white hover:bg-yellow-700 px-8 py-2 rounded border-2 border-yellow-800 text-lg font-bold transition-colors shadow-md">更改密碼</button>
+                    <button onclick="resetApp()" class="bg-green-600 text-white hover:bg-green-700 px-8 py-2 rounded border-2 border-green-800 text-lg font-bold transition-colors shadow-md">返回首頁</button>
+                </div>
             </div>
 
         </div>
@@ -283,7 +312,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- 全局變數與狀態 ---
         let questions = [];
@@ -336,12 +365,89 @@
             closeConfirm();
         };
 
+        // --- 管理員密碼與登入邏輯 ---
+        window.showAdminLogin = function() {
+            document.getElementById('admin-pwd-input').value = '';
+            document.getElementById('admin-login-modal').classList.remove('hidden');
+        };
+        window.closeAdminLogin = function() {
+            document.getElementById('admin-login-modal').classList.add('hidden');
+        };
+        
+        window.verifyAdminLogin = async function() {
+            const pwdInput = document.getElementById('admin-pwd-input').value;
+            if (!pwdInput) {
+                showMessage("大俠請留步，請輸入密碼！");
+                return;
+            }
+            if (!currentUser || !db) {
+                showMessage("案卷系統尚未連線，請稍後。");
+                return;
+            }
+            
+            try {
+                // 從資料庫取得密碼設定
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'math_admin', 'settings');
+                const docSnap = await getDoc(docRef);
+                
+                let correctPwd = 'admin'; // 預設密碼
+                if (docSnap.exists() && docSnap.data().password) {
+                    correctPwd = docSnap.data().password;
+                }
+                
+                if (pwdInput === correctPwd) {
+                    closeAdminLogin();
+                    showAdmin(); // 密碼正確，進入管理介面
+                } else {
+                    showMessage("密碼錯誤，您非本門掌門！");
+                }
+            } catch (e) {
+                console.error("Login Check Error:", e);
+                showMessage("核實過程發生異常，請確認資料庫權限。");
+            }
+        };
+
+        window.showChangePwd = function() {
+            document.getElementById('new-pwd-input').value = '';
+            document.getElementById('new-pwd-confirm').value = '';
+            document.getElementById('change-pwd-modal').classList.remove('hidden');
+        };
+        window.closeChangePwd = function() {
+            document.getElementById('change-pwd-modal').classList.add('hidden');
+        };
+        
+        window.saveNewPassword = async function() {
+            const newPwd = document.getElementById('new-pwd-input').value;
+            const confirmPwd = document.getElementById('new-pwd-confirm').value;
+            
+            if (!newPwd) {
+                showMessage("密碼不可為空！");
+                return;
+            }
+            if (newPwd !== confirmPwd) {
+                showMessage("兩次輸入的密碼不一致，請重新確認！");
+                return;
+            }
+
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'math_admin', 'settings');
+                // 使用 merge: true 以免覆蓋其他未來可能加入的設定
+                await setDoc(docRef, { password: newPwd }, { merge: true });
+                
+                closeChangePwd();
+                showMessage("密碼更改成功！下次請使用新密碼登入。");
+            } catch (e) {
+                console.error("Change Pwd Error:", e);
+                showMessage("更改密碼失敗。");
+            }
+        };
+
         // --- Firebase 初始化 ---
         async function initFirebase() {
             try {
                 // =============== [請在這裡填寫您的 Firebase 設定] ===============
                 // 請將下方的內容，替換成您從 Firebase 控制台複製下來的 firebaseConfig
-                          const firebaseConfig = {
+                            const firebaseConfig = {
   apiKey: "AIzaSyAHnmYdfkyip_87RHjStSkUV1OjoUDhq_U",
   authDomain: "math02-64f13.firebaseapp.com",
   projectId: "math02-64f13",
@@ -350,7 +456,6 @@
   appId: "1:1015648728259:web:a3dd756d7a23914ff09e76"
 };   
 
-                
                 appId = 'math-quiz-11-to-19'; // 您的應用程式專屬 ID (可自訂)
                 // =================================================================
                 
