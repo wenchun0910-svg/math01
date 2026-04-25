@@ -145,11 +145,6 @@
         <div class="chinese-border rounded p-6 sm:p-10 relative mt-8 sm:mt-0 mb-8 sm:mb-0">
             <!-- 視圖 1: 首頁 (登入/輸入姓名) -->
             <div id="view-start" class="flex flex-col items-center relative">
-                
-                <!-- 管理員按鈕 (右上角小齒輪) -->
-                <button onclick="showAdmin()" class="absolute top-0 right-0 text-gray-400 hover:text-green-600 transition-colors" title="管理介面">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                </button>
 
                 <div class="seal">科舉</div>
                 <h1 class="text-4xl sm:text-5xl font-black mb-2 text-[#1B5E20] tracking-widest text-center" style="text-shadow: 2px 2px 0px rgba(255,215,0,0.5);">九宮算術</h1>
@@ -166,6 +161,14 @@
                     <p>測驗說明：共九題，皆為 11 至 19 的同數相乘 (如 11×11)。</p>
                     <p>計分方式：全部答對即滿分，依照答對題數給分。時間越短排名越高！</p>
                     <p id="db-status" class="mt-2 text-xs text-yellow-600 animate-pulse">正在準備案卷 (連接資料庫)...</p>
+                    
+                    <!-- 管理員按鈕 (移至最下方並加上文字) -->
+                    <div class="mt-6">
+                        <button onclick="showAdmin()" class="flex items-center justify-center gap-1 mx-auto text-sm text-gray-400 hover:text-green-700 transition-colors" title="管理介面">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            進入卷宗管理
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -338,7 +341,7 @@
             try {
                 // =============== [請在這裡填寫您的 Firebase 設定] ===============
                 // 請將下方的內容，替換成您從 Firebase 控制台複製下來的 firebaseConfig
-                         const firebaseConfig = {
+                          const firebaseConfig = {
   apiKey: "AIzaSyAHnmYdfkyip_87RHjStSkUV1OjoUDhq_U",
   authDomain: "math02-64f13.firebaseapp.com",
   projectId: "math02-64f13",
@@ -347,6 +350,7 @@
   appId: "1:1015648728259:web:a3dd756d7a23914ff09e76"
 };   
 
+                
                 appId = 'math-quiz-11-to-19'; // 您的應用程式專屬 ID (可自訂)
                 // =================================================================
                 
